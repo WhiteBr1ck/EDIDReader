@@ -1,0 +1,40 @@
+<controls:SectionedPage x:Class="EDIDReader.App.Pages.SettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:EDIDReader.App.Controls"
+             Loaded="Page_Loaded">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
+        <StackPanel Margin="30,27,30,32" MaxWidth="980" HorizontalAlignment="Stretch">
+            <controls:SelectableTextBlock Text="设置" Style="{StaticResource PageTitleStyle}" Margin="2,0,2,22"/>
+
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,18">
+                <StackPanel>
+                    <controls:SelectableTextBlock Text="外观与语言" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,20"/>
+
+                    <controls:SelectableTextBlock Text="主题" FontWeight="Bold" Margin="0,0,0,12"/>
+                    <WrapPanel Margin="0,0,0,12">
+                        <RadioButton x:Name="ThemeSystem" GroupName="ThemeMode" Tag="System" Content="自动" Style="{StaticResource ChoiceRadioStyle}" Checked="Theme_Checked" AutomationProperties.Name="自动主题"/>
+                        <RadioButton x:Name="ThemeLight" GroupName="ThemeMode" Tag="Light" Content="浅色" Style="{StaticResource ChoiceRadioStyle}" Checked="Theme_Checked" AutomationProperties.Name="浅色主题"/>
+                        <RadioButton x:Name="ThemeDark" GroupName="ThemeMode" Tag="Dark" Content="深色" Style="{StaticResource ChoiceRadioStyle}" Checked="Theme_Checked" AutomationProperties.Name="深色主题"/>
+                    </WrapPanel>
+
+                    <Border BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,1,0,0" Margin="0,0,0,20"/>
+
+                    <controls:SelectableTextBlock Text="语言" FontWeight="Bold" Margin="0,0,0,12"/>
+                    <WrapPanel>
+                        <RadioButton x:Name="LanguageChinese" GroupName="Language" Tag="zh-CN" Content="中文" Style="{StaticResource ChoiceRadioStyle}" Checked="Language_Checked" AutomationProperties.Name="中文"/>
+                        <RadioButton x:Name="LanguageEnglish" GroupName="Language" Tag="en-US" Content="英语" Style="{StaticResource ChoiceRadioStyle}" Checked="Language_Checked" AutomationProperties.Name="英语"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel>
+                    <controls:SelectableTextBlock Text="关于" Style="{StaticResource SectionTitleStyle}"/>
+                    <controls:SelectableTextBlock Text="EDID Reader" FontWeight="Bold" Margin="0,17,0,0"/>
+                    <controls:SelectableTextBlock Text="版本 0.4.0" Style="{StaticResource CaptionStyle}" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</controls:SectionedPage>

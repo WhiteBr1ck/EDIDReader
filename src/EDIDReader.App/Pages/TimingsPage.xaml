@@ -1,0 +1,196 @@
+<controls:SectionedPage x:Class="EDIDReader.App.Pages.TimingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:EDIDReader.App.Controls">
+    <controls:SectionedPage.Resources>
+        <Style x:Key="TimingExpanderStyle" TargetType="Expander">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Expander">
+                        <Border BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,1,0,0">
+                            <StackPanel>
+                                <ToggleButton x:Name="HeaderButton"
+                                              Content="{TemplateBinding Header}"
+                                              IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                              Background="Transparent"
+                                              BorderThickness="0"
+                                              FocusVisualStyle="{x:Null}"
+                                              HorizontalContentAlignment="Stretch"
+                                              Cursor="Hand">
+                                    <ToggleButton.Template>
+                                        <ControlTemplate TargetType="ToggleButton">
+                                            <Border x:Name="Row" Background="Transparent">
+                                                <ContentPresenter HorizontalAlignment="Stretch"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Row" Property="Background" Value="{DynamicResource CardHoverBrush}"/></Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </ToggleButton.Template>
+                                </ToggleButton>
+                                <ContentPresenter x:Name="ExpandSite" ContentSource="Content" Visibility="Collapsed"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsExpanded" Value="True"><Setter TargetName="ExpandSite" Property="Visibility" Value="Visible"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TimingListItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <ContentPresenter HorizontalAlignment="Stretch"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SortHeaderButtonStyle" TargetType="Button">
+            <Setter Property="MinHeight" Value="40"/>
+            <Setter Property="MinWidth" Value="40"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Foreground" Value="{DynamicResource InkBrush}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Surface"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform><ScaleTransform ScaleX="1" ScaleY="1"/></Border.RenderTransform>
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Foreground" Value="{DynamicResource PurpleBrush}"/></Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Surface" Property="RenderTransform"><Setter.Value><ScaleTransform ScaleX="0.96" ScaleY="0.96"/></Setter.Value></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SortIndicatorStyle" TargetType="Border">
+            <Setter Property="Width" Value="19"/>
+            <Setter Property="Height" Value="19"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Margin" Value="6,0,0,0"/>
+            <Setter Property="Background" Value="{DynamicResource PurpleSoftBrush}"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+        </Style>
+    </controls:SectionedPage.Resources>
+
+    <Grid Margin="30,27,30,32">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="2,0,2,22">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel>
+                    <controls:SelectableTextBlock Text="时序与视频模式" Style="{StaticResource PageTitleStyle}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button x:Name="ResetSortButton" Style="{StaticResource QuietButtonStyle}" Margin="0,0,8,0" Click="ResetSort_Click" IsEnabled="False" AutomationProperties.Name="恢复默认排序"><StackPanel Orientation="Horizontal"><controls:ReIcon Icon="Refresh" Width="16" Height="16" Margin="0,0,7,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="恢复默认排序" IsHitTestVisible="False"/></StackPanel></Button>
+                    <Button Style="{StaticResource QuietButtonStyle}" Margin="0,0,8,0" Click="Filter_Click" AutomationProperties.Name="筛选视频模式"><StackPanel Orientation="Horizontal"><controls:ReIcon Icon="Filter" Width="16" Height="16" Margin="0,0,7,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock x:Name="FilterLabel" Text="仅看首选" IsHitTestVisible="False"/></StackPanel></Button>
+                    <Button Style="{StaticResource QuietButtonStyle}" Content="导出 CSV" Click="ExportCsv_Click" AutomationProperties.Name="导出视频模式 CSV"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1" Margin="0,0,0,18"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Style="{StaticResource CardStyle}" Padding="17"><StackPanel><controls:SelectableTextBlock Text="当前模式" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding Resolution, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0"/><controls:SelectableTextBlock Text="{Binding RefreshRate, Mode=OneWay}" Style="{StaticResource CaptionStyle}" Margin="0,3,0,0"/></StackPanel></Border>
+                <Border Grid.Column="2" Style="{StaticResource CardStyle}" Padding="17"><StackPanel><controls:SelectableTextBlock Text="EDID 模式数量" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding VideoModeCount, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel></Border>
+                <Border Grid.Column="4" Style="{StaticResource CardStyle}" Padding="17"><StackPanel><controls:SelectableTextBlock Text="EDID 最大像素时钟" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding MaximumDeclaredPixelClock, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel></Border>
+            </Grid>
+
+            <Border Grid.Row="2" Style="{StaticResource CardStyle}" Padding="0" ClipToBounds="True">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <Border Grid.Row="0" Background="{DynamicResource TableHeaderBrush}" CornerRadius="16,16,0,0">
+                        <Grid Height="48" Margin="0,0,14,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="34"/><ColumnDefinition Width="1.25*"/><ColumnDefinition Width="0.75*"/><ColumnDefinition Width="0.65*"/><ColumnDefinition Width="0.9*"/><ColumnDefinition Width="1.0*"/><ColumnDefinition Width="0.7*"/></Grid.ColumnDefinitions>
+                            <Button Grid.Column="1" Tag="Resolution" Click="Sort_Click" Style="{StaticResource SortHeaderButtonStyle}" AutomationProperties.Name="按分辨率排序"><StackPanel Orientation="Horizontal"><TextBlock Text="分辨率" FontSize="13" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" IsHitTestVisible="False"/><Border x:Name="ResolutionSortIndicator" Style="{StaticResource SortIndicatorStyle}"><controls:ReIcon x:Name="ResolutionSortIcon" Icon="ArrowUp" Width="11" Height="11" Foreground="{DynamicResource PurpleBrush}"/></Border></StackPanel></Button>
+                            <Button Grid.Column="2" Tag="Refresh" Click="Sort_Click" Style="{StaticResource SortHeaderButtonStyle}" AutomationProperties.Name="按刷新率排序"><StackPanel Orientation="Horizontal"><TextBlock Text="刷新率" FontSize="13" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" IsHitTestVisible="False"/><Border x:Name="RefreshSortIndicator" Style="{StaticResource SortIndicatorStyle}"><controls:ReIcon x:Name="RefreshSortIcon" Icon="ArrowUp" Width="11" Height="11" Foreground="{DynamicResource PurpleBrush}"/></Border></StackPanel></Button>
+                            <Button Grid.Column="3" Tag="Scan" Click="Sort_Click" Style="{StaticResource SortHeaderButtonStyle}" AutomationProperties.Name="按扫描方式排序"><StackPanel Orientation="Horizontal"><TextBlock Text="扫描" FontSize="13" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" IsHitTestVisible="False"/><Border x:Name="ScanSortIndicator" Style="{StaticResource SortIndicatorStyle}"><controls:ReIcon x:Name="ScanSortIcon" Icon="ArrowUp" Width="11" Height="11" Foreground="{DynamicResource PurpleBrush}"/></Border></StackPanel></Button>
+                            <Button Grid.Column="4" Tag="PixelClock" Click="Sort_Click" Style="{StaticResource SortHeaderButtonStyle}" AutomationProperties.Name="按像素时钟排序"><StackPanel Orientation="Horizontal"><TextBlock Text="像素时钟" FontSize="13" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" IsHitTestVisible="False"/><Border x:Name="PixelClockSortIndicator" Style="{StaticResource SortIndicatorStyle}"><controls:ReIcon x:Name="PixelClockSortIcon" Icon="ArrowUp" Width="11" Height="11" Foreground="{DynamicResource PurpleBrush}"/></Border></StackPanel></Button>
+                            <Button Grid.Column="5" Tag="Source" Click="Sort_Click" Style="{StaticResource SortHeaderButtonStyle}" AutomationProperties.Name="按来源排序"><StackPanel Orientation="Horizontal"><TextBlock Text="来源" FontSize="13" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" IsHitTestVisible="False"/><Border x:Name="SourceSortIndicator" Style="{StaticResource SortIndicatorStyle}"><controls:ReIcon x:Name="SourceSortIcon" Icon="ArrowUp" Width="11" Height="11" Foreground="{DynamicResource PurpleBrush}"/></Border></StackPanel></Button>
+                            <Button Grid.Column="6" Tag="Mark" Click="Sort_Click" Style="{StaticResource SortHeaderButtonStyle}" AutomationProperties.Name="按标记排序"><StackPanel Orientation="Horizontal"><TextBlock Text="标记" FontSize="13" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" IsHitTestVisible="False"/><Border x:Name="MarkSortIndicator" Style="{StaticResource SortIndicatorStyle}"><controls:ReIcon x:Name="MarkSortIcon" Icon="ArrowUp" Width="11" Height="11" Foreground="{DynamicResource PurpleBrush}"/></Border></StackPanel></Button>
+                        </Grid>
+                    </Border>
+                    <ListBox x:Name="ModeList"
+                             Grid.Row="1"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="0"
+                             HorizontalContentAlignment="Stretch"
+                             ItemContainerStyle="{StaticResource TimingListItemStyle}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             ScrollViewer.CanContentScroll="True"
+                             VirtualizingPanel.IsVirtualizing="True"
+                             VirtualizingPanel.VirtualizationMode="Recycling"
+                             VirtualizingPanel.ScrollUnit="Pixel">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Expander Style="{StaticResource TimingExpanderStyle}"
+                                          HorizontalContentAlignment="Stretch"
+                                          IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
+                                          Expanded="Timing_Expanded">
+                                    <Expander.Header>
+                                        <Grid MinHeight="54">
+                                            <Grid.ColumnDefinitions><ColumnDefinition Width="34"/><ColumnDefinition Width="1.25*"/><ColumnDefinition Width="0.75*"/><ColumnDefinition Width="0.65*"/><ColumnDefinition Width="0.9*"/><ColumnDefinition Width="1.0*"/><ColumnDefinition Width="0.7*"/></Grid.ColumnDefinitions>
+                                            <TextBlock Text="›" FontSize="21" Foreground="{DynamicResource MutedBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" RenderTransformOrigin="0.5,0.5">
+                                                <TextBlock.RenderTransform><RotateTransform Angle="0"/></TextBlock.RenderTransform>
+                                                <TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}"><Style.Triggers><DataTrigger Binding="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType=Expander}}" Value="True"><Setter Property="RenderTransform"><Setter.Value><RotateTransform Angle="90"/></Setter.Value></Setter></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                                            </TextBlock>
+                                            <controls:SelectableTextBlock Grid.Column="1" Text="{Binding Resolution, Mode=OneWay}" VerticalAlignment="Center" FontWeight="Bold"/>
+                                            <controls:SelectableTextBlock Grid.Column="2" Text="{Binding RefreshRate, Mode=OneWay}" Style="{StaticResource MonoStyle}" VerticalAlignment="Center"/>
+                                            <controls:SelectableTextBlock Grid.Column="3" Text="{Binding Scan, Mode=OneWay}" VerticalAlignment="Center"/>
+                                            <controls:SelectableTextBlock Grid.Column="4" Text="{Binding PixelClock, Mode=OneWay}" Style="{StaticResource MonoStyle}" VerticalAlignment="Center"/>
+                                            <controls:SelectableTextBlock Grid.Column="5" Text="{Binding Source, Mode=OneWay}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                            <controls:SelectableTextBlock Grid.Column="6" Text="{Binding Mark, Mode=OneWay}" Foreground="{DynamicResource PurpleBrush}" FontWeight="Bold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                        </Grid>
+                                    </Expander.Header>
+                                    <Border Background="{DynamicResource PanelSoftBrush}" Padding="34,16,18,20">
+                                        <StackPanel>
+                                            <controls:SelectableTextBlock Text="{Binding DetailStatus, Mode=OneWay}" Style="{StaticResource CaptionStyle}" Margin="0,0,0,14"/>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,16,14"><controls:SelectableTextBlock Text="水平活动像素" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding HorizontalActiveText, Mode=OneWay}" Style="{StaticResource MonoStyle}" Margin="0,5,0,0"/></StackPanel>
+                                                <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,16,14"><controls:SelectableTextBlock Text="垂直活动像素" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding VerticalActiveText, Mode=OneWay}" Style="{StaticResource MonoStyle}" Margin="0,5,0,0"/></StackPanel>
+                                                <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,16,14"><controls:SelectableTextBlock Text="水平消隐" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding HorizontalBlankingText, Mode=OneWay}" Style="{StaticResource MonoStyle}" Margin="0,5,0,0"/></StackPanel>
+                                                <StackPanel Grid.Row="0" Grid.Column="3" Margin="0,0,0,14"><controls:SelectableTextBlock Text="垂直消隐" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding VerticalBlankingText, Mode=OneWay}" Style="{StaticResource MonoStyle}" Margin="0,5,0,0"/></StackPanel>
+                                                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,16,14"><controls:SelectableTextBlock Text="水平总像素" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding HorizontalTotalText, Mode=OneWay}" Style="{StaticResource MonoStyle}" Margin="0,5,0,0"/></StackPanel>
+                                                <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,16,14"><controls:SelectableTextBlock Text="垂直总像素" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding VerticalTotalText, Mode=OneWay}" Style="{StaticResource MonoStyle}" Margin="0,5,0,0"/></StackPanel>
+                                                <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,16,14"><controls:SelectableTextBlock Text="水平同步偏移" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding HorizontalSyncOffsetText, Mode=OneWay}" Style="{StaticResource MonoStyle}" Margin="0,5,0,0"/></StackPanel>
+                                                <StackPanel Grid.Row="1" Grid.Column="3" Margin="0,0,0,14"><controls:SelectableTextBlock Text="垂直同步偏移" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding VerticalSyncOffsetText, Mode=OneWay}" Style="{StaticResource MonoStyle}" Margin="0,5,0,0"/></StackPanel>
+                                                <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,16,0"><controls:SelectableTextBlock Text="水平同步宽度" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding HorizontalSyncWidthText, Mode=OneWay}" Style="{StaticResource MonoStyle}" Margin="0,5,0,0"/></StackPanel>
+                                                <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,0,16,0"><controls:SelectableTextBlock Text="垂直同步宽度" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding VerticalSyncWidthText, Mode=OneWay}" Style="{StaticResource MonoStyle}" Margin="0,5,0,0"/></StackPanel>
+                                                <StackPanel Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2"><controls:SelectableTextBlock Text="同步极性" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding SyncPolarity, Mode=OneWay}" Margin="0,5,0,0"/></StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+                                </Expander>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+    </Grid>
+</controls:SectionedPage>
