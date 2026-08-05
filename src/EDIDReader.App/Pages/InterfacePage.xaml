@@ -1,40 +1,253 @@
 <controls:SectionedPage x:Class="EDIDReader.App.Pages.InterfacePage"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="clr-namespace:EDIDReader.App.Controls">
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:controls="clr-namespace:EDIDReader.App.Controls">
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="30,27,30,32">
-            <Grid Margin="2,0,2,22"><controls:SelectableTextBlock Text="接口与信号" Style="{StaticResource PageTitleStyle}"/><Border HorizontalAlignment="Right" Style="{StaticResource PillStyle}" Background="{DynamicResource BlueSoftBrush}" VerticalAlignment="Top"><controls:SelectableTextBlock Text="{Binding Connection, Mode=OneWay}" Foreground="{DynamicResource BlueBrush}" FontWeight="Bold" FontSize="12"/></Border></Grid>
+            <Grid Margin="2,0,2,22">
+                <controls:SelectableTextBlock Text="接口与信号" Style="{StaticResource PageTitleStyle}"/>
+                <Border HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Style="{StaticResource PillStyle}"
+                        Background="{Binding AccentSoftColor}">
+                    <controls:SelectableTextBlock Text="{Binding Connection, Mode=OneWay}"
+                                                  Foreground="{Binding AccentColor}"
+                                                  FontWeight="Bold"
+                                                  FontSize="12"/>
+                </Border>
+            </Grid>
 
             <Border Style="{StaticResource CardStyle}" Margin="0,0,0,18">
-                <StackPanel><Grid Margin="0,0,0,18"><controls:SelectableTextBlock Text="Windows 活动连接路径" Style="{StaticResource SectionTitleStyle}"/><controls:SelectableTextBlock Text="DisplayConfig" HorizontalAlignment="Right" Style="{StaticResource CaptionStyle}"/></Grid>
-                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="54"/><ColumnDefinition Width="*"/><ColumnDefinition Width="54"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" CornerRadius="15" Background="{DynamicResource PanelBrush}" Padding="16"><StackPanel HorizontalAlignment="Center"><controls:SelectableTextBlock Text="显示源" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding SourceName, Mode=OneWay}" FontWeight="Bold" Margin="0,9,0,0"/></StackPanel></Border>
+                <StackPanel>
+                    <Grid Margin="0,0,0,18">
+                        <controls:SelectableTextBlock Text="Windows 活动连接路径" Style="{StaticResource SectionTitleStyle}"/>
+                        <controls:SelectableTextBlock Text="DisplayConfig" HorizontalAlignment="Right" Style="{StaticResource CaptionStyle}"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="54"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="54"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" CornerRadius="15" Background="{DynamicResource PanelBrush}" Padding="16">
+                            <StackPanel HorizontalAlignment="Center">
+                                <controls:SelectableTextBlock Text="显示源" Style="{StaticResource LabelStyle}"/>
+                                <controls:SelectableTextBlock Text="{Binding SourceName, Mode=OneWay}" FontWeight="Bold" Margin="0,9,0,0"/>
+                            </StackPanel>
+                        </Border>
                         <controls:SelectableTextBlock Grid.Column="1" Text="›" FontSize="31" Foreground="{DynamicResource SubtleBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <Border Grid.Column="2" CornerRadius="15" Background="{DynamicResource PanelBrush}" Padding="16"><StackPanel HorizontalAlignment="Center"><controls:SelectableTextBlock Text="输出技术" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding Connection, Mode=OneWay}" Foreground="{Binding AccentColor}" FontWeight="Bold" Margin="0,9,0,0"/></StackPanel></Border>
+                        <Border Grid.Column="2" CornerRadius="15" Background="{DynamicResource PanelBrush}" Padding="16">
+                            <StackPanel HorizontalAlignment="Center">
+                                <controls:SelectableTextBlock Text="输出技术" Style="{StaticResource LabelStyle}"/>
+                                <controls:SelectableTextBlock Text="{Binding Connection, Mode=OneWay}" Foreground="{Binding AccentColor}" FontWeight="Bold" Margin="0,9,0,0"/>
+                            </StackPanel>
+                        </Border>
                         <controls:SelectableTextBlock Grid.Column="3" Text="›" FontSize="31" Foreground="{DynamicResource SubtleBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <Border Grid.Column="4" CornerRadius="15" Background="{DynamicResource PanelBrush}" Padding="16"><StackPanel HorizontalAlignment="Center"><controls:SelectableTextBlock Text="活动目标" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" Margin="0,9,0,0" TextAlignment="Center"/></StackPanel></Border>
+                        <Border Grid.Column="4" CornerRadius="15" Background="{DynamicResource PanelBrush}" Padding="16">
+                            <StackPanel HorizontalAlignment="Center">
+                                <controls:SelectableTextBlock Text="活动目标" Style="{StaticResource LabelStyle}"/>
+                                <controls:SelectableTextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" Margin="0,9,0,0" TextAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
                     </Grid>
                 </StackPanel>
             </Border>
 
-            <Grid Margin="0,0,0,18"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Style="{StaticResource CardStyle}" Padding="16"><StackPanel><controls:SelectableTextBlock Text="分辨率" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding Resolution, Mode=OneWay}" FontSize="18" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel></Border>
-                <Border Grid.Column="2" Style="{StaticResource CardStyle}" Padding="16"><StackPanel><controls:SelectableTextBlock Text="刷新率" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding RefreshRate, Mode=OneWay}" FontSize="18" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel></Border>
-                <Border Grid.Column="4" Style="{StaticResource CardStyle}" Padding="16"><StackPanel><controls:SelectableTextBlock Text="颜色编码" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding ColorSpace, Mode=OneWay}" FontSize="16" FontWeight="Bold" Margin="0,7,0,0" TextWrapping="Wrap"/></StackPanel></Border>
-                <Border Grid.Column="6" Style="{StaticResource CardStyle}" Padding="16"><StackPanel><controls:SelectableTextBlock Text="通道位深" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding ColorDepth, Mode=OneWay}" FontSize="18" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel></Border>
+            <Border Style="{StaticResource CardStyle}"
+                    Margin="0,0,0,18"
+                    Visibility="{Binding ShowCurrentDisplayPortLink, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel>
+                    <Grid Margin="0,0,0,13">
+                        <controls:SelectableTextBlock Text="当前 DP 链路" Style="{StaticResource SectionTitleStyle}"/>
+                        <controls:SelectableTextBlock Text="{Binding DisplayLink.Source, Mode=OneWay}"
+                                                      HorizontalAlignment="Right"
+                                                      Style="{StaticResource CaptionStyle}"/>
+                    </Grid>
+                    <UniformGrid Columns="3">
+                        <Border CornerRadius="13" Background="{DynamicResource PanelBrush}" Padding="16,13" Margin="0,0,6,6" MinHeight="82">
+                            <StackPanel>
+                                <controls:SelectableTextBlock Text="当前链路" Style="{StaticResource LabelStyle}"/>
+                                <controls:SelectableTextBlock Text="{Binding DisplayLink.CurrentLinkText, Mode=OneWay}" FontSize="23" FontWeight="Bold" Margin="0,7,0,0" Typography.NumeralAlignment="Tabular"/>
+                            </StackPanel>
+                        </Border>
+                        <Border CornerRadius="13" Background="{DynamicResource PanelBrush}" Padding="16,13" Margin="6,0,6,6" MinHeight="82">
+                            <StackPanel>
+                                <controls:SelectableTextBlock Text="链路等级" Style="{StaticResource LabelStyle}"/>
+                                <controls:SelectableTextBlock Text="{Binding DisplayLink.CurrentGeneration, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        <Border CornerRadius="13" Background="{DynamicResource PanelBrush}" Padding="16,13" Margin="6,0,0,6" MinHeight="82">
+                            <StackPanel>
+                                <controls:SelectableTextBlock Text="原始带宽" Style="{StaticResource LabelStyle}"/>
+                                <controls:SelectableTextBlock Text="{Binding DisplayLink.RawBandwidthText, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0" Typography.NumeralAlignment="Tabular"/>
+                            </StackPanel>
+                        </Border>
+                        <Border CornerRadius="13" Background="{DynamicResource PanelBrush}" Padding="16,13" Margin="0,6,6,0" MinHeight="82">
+                            <StackPanel>
+                                <controls:SelectableTextBlock Text="理论有效速率" Style="{StaticResource LabelStyle}"/>
+                                <controls:SelectableTextBlock Text="{Binding DisplayLink.PayloadBandwidthText, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0" Typography.NumeralAlignment="Tabular"/>
+                            </StackPanel>
+                        </Border>
+                        <Border CornerRadius="13" Background="{DynamicResource PanelBrush}" Padding="16,13" Margin="6,6,6,0" MinHeight="82">
+                            <StackPanel>
+                                <controls:SelectableTextBlock Text="最大链路" Style="{StaticResource LabelStyle}"/>
+                                <controls:SelectableTextBlock Text="{Binding DisplayLink.MaximumLinkText, Mode=OneWay}" FontSize="18" FontWeight="Bold" Margin="0,7,0,0" TextWrapping="Wrap" Typography.NumeralAlignment="Tabular"/>
+                            </StackPanel>
+                        </Border>
+                        <Border CornerRadius="13" Background="{DynamicResource PanelBrush}" Padding="16,13" Margin="6,6,0,0" MinHeight="82">
+                            <StackPanel>
+                                <controls:SelectableTextBlock Text="总可用通道" Style="{StaticResource LabelStyle}"/>
+                                <controls:SelectableTextBlock Text="{Binding DisplayLink.LaneCapacityText, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0" Typography.NumeralAlignment="Tabular"/>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}"
+                    Margin="0,0,0,18"
+                    Visibility="{Binding ShowCurrentHdmiLink, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel>
+                    <Grid Margin="0,0,0,13">
+                        <controls:SelectableTextBlock Text="当前 HDMI 链路" Style="{StaticResource SectionTitleStyle}"/>
+                        <controls:SelectableTextBlock Text="{Binding HdmiLink.Source, Mode=OneWay}"
+                                                      HorizontalAlignment="Right"
+                                                      Style="{StaticResource CaptionStyle}"/>
+                    </Grid>
+                    <UniformGrid Columns="3">
+                        <Border CornerRadius="13" Background="{DynamicResource PanelBrush}" Padding="16,13" Margin="0,0,6,6" MinHeight="82">
+                            <StackPanel>
+                                <controls:SelectableTextBlock Text="当前像素时钟" Style="{StaticResource LabelStyle}"/>
+                                <controls:SelectableTextBlock Text="{Binding HdmiLink.CurrentPixelClockText, Mode=OneWay}" FontSize="21" FontWeight="Bold" Margin="0,7,0,0" Typography.NumeralAlignment="Tabular"/>
+                            </StackPanel>
+                        </Border>
+                        <Border CornerRadius="13" Background="{DynamicResource PanelBrush}" Padding="16,13" Margin="6,0,6,6" MinHeight="82">
+                            <StackPanel>
+                                <controls:SelectableTextBlock Text="估算 TMDS 频率" Style="{StaticResource LabelStyle}"/>
+                                <controls:SelectableTextBlock Text="{Binding HdmiLink.EstimatedTmdsFrequencyText, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0" Typography.NumeralAlignment="Tabular"/>
+                            </StackPanel>
+                        </Border>
+                        <Border CornerRadius="13" Background="{DynamicResource PanelBrush}" Padding="16,13" Margin="6,0,0,6" MinHeight="82">
+                            <StackPanel>
+                                <controls:SelectableTextBlock Text="估算 TMDS 带宽" Style="{StaticResource LabelStyle}"/>
+                                <controls:SelectableTextBlock Text="{Binding HdmiLink.EstimatedTmdsBandwidthText, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0" Typography.NumeralAlignment="Tabular"/>
+                            </StackPanel>
+                        </Border>
+                        <Border CornerRadius="13" Background="{DynamicResource PanelBrush}" Padding="16,13" Margin="0,6,6,0" MinHeight="82">
+                            <StackPanel>
+                                <controls:SelectableTextBlock Text="当前工作模式" Style="{StaticResource LabelStyle}"/>
+                                <controls:SelectableTextBlock Text="{Binding HdmiLink.CurrentModeText, Mode=OneWay}" FontSize="18" FontWeight="Bold" Margin="0,7,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                        <Border CornerRadius="13" Background="{DynamicResource PanelBrush}" Padding="16,13" Margin="6,6,6,0" MinHeight="82">
+                            <StackPanel>
+                                <controls:SelectableTextBlock Text="最大 TMDS 频率" Style="{StaticResource LabelStyle}"/>
+                                <controls:SelectableTextBlock Text="{Binding MaximumTmdsClock, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0" Typography.NumeralAlignment="Tabular"/>
+                            </StackPanel>
+                        </Border>
+                        <Border CornerRadius="13" Background="{DynamicResource PanelBrush}" Padding="16,13" Margin="6,6,0,0" MinHeight="82">
+                            <StackPanel>
+                                <controls:SelectableTextBlock Text="最大 FRL 带宽" Style="{StaticResource LabelStyle}"/>
+                                <controls:SelectableTextBlock Text="{Binding MaximumFrlRate, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0" Typography.NumeralAlignment="Tabular"/>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+                </StackPanel>
+            </Border>
+
+            <Grid Margin="0,0,0,18">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Style="{StaticResource CardStyle}" Padding="16">
+                    <StackPanel>
+                        <controls:SelectableTextBlock Text="分辨率" Style="{StaticResource LabelStyle}"/>
+                        <controls:SelectableTextBlock Text="{Binding Resolution, Mode=OneWay}" FontSize="18" FontWeight="Bold" Margin="0,7,0,0" Typography.NumeralAlignment="Tabular"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource CardStyle}" Padding="16">
+                    <StackPanel>
+                        <controls:SelectableTextBlock Text="刷新率" Style="{StaticResource LabelStyle}"/>
+                        <controls:SelectableTextBlock Text="{Binding RefreshRate, Mode=OneWay}" FontSize="18" FontWeight="Bold" Margin="0,7,0,0" Typography.NumeralAlignment="Tabular"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="4" Style="{StaticResource CardStyle}" Padding="16">
+                    <StackPanel>
+                        <controls:SelectableTextBlock Text="颜色编码" Style="{StaticResource LabelStyle}"/>
+                        <controls:SelectableTextBlock Text="{Binding ColorSpace, Mode=OneWay}" FontSize="16" FontWeight="Bold" Margin="0,7,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="6" Style="{StaticResource CardStyle}" Padding="16">
+                    <StackPanel>
+                        <controls:SelectableTextBlock Text="通道位深" Style="{StaticResource LabelStyle}"/>
+                        <controls:SelectableTextBlock Text="{Binding ColorDepth, Mode=OneWay}" FontSize="18" FontWeight="Bold" Margin="0,7,0,0" Typography.NumeralAlignment="Tabular"/>
+                    </StackPanel>
+                </Border>
             </Grid>
 
-            <Grid Margin="0,0,0,18"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Style="{StaticResource CardStyle}" Padding="17"><StackPanel><controls:SelectableTextBlock Text="VRR" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding VrrStateText, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0"><controls:SelectableTextBlock.Style><Style TargetType="controls:SelectableTextBlock" BasedOn="{StaticResource {x:Type controls:SelectableTextBlock}}"><Setter Property="Foreground" Value="{DynamicResource MutedBrush}"/><Style.Triggers><DataTrigger Binding="{Binding VrrSupported}" Value="True"><Setter Property="Foreground" Value="{DynamicResource GreenBrush}"/></DataTrigger></Style.Triggers></Style></controls:SelectableTextBlock.Style></controls:SelectableTextBlock></StackPanel></Border>
-                <Border Grid.Column="2" Style="{StaticResource CardStyle}" Padding="17"><StackPanel><controls:SelectableTextBlock Text="VRR 可变刷新范围" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding VrrRangeText, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0" Typography.NumeralAlignment="Tabular"/></StackPanel></Border>
-                <Border Grid.Column="4" Style="{StaticResource CardStyle}" Padding="17"><StackPanel><controls:SelectableTextBlock Text="最大 FRL 带宽" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding MaximumFrlRate, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel></Border>
-                <Border Grid.Column="6" Style="{StaticResource CardStyle}" Padding="17"><StackPanel><controls:SelectableTextBlock Text="ALLM" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding AllmStateText, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0"><controls:SelectableTextBlock.Style><Style TargetType="controls:SelectableTextBlock" BasedOn="{StaticResource {x:Type controls:SelectableTextBlock}}"><Setter Property="Foreground" Value="{DynamicResource MutedBrush}"/><Style.Triggers><DataTrigger Binding="{Binding AllmSupported}" Value="True"><Setter Property="Foreground" Value="{DynamicResource GreenBrush}"/></DataTrigger></Style.Triggers></Style></controls:SelectableTextBlock.Style></controls:SelectableTextBlock></StackPanel></Border>
+            <Grid Margin="0,0,0,18">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Style="{StaticResource CardStyle}" Padding="17">
+                    <StackPanel>
+                        <controls:SelectableTextBlock Text="VRR" Style="{StaticResource LabelStyle}"/>
+                        <controls:SelectableTextBlock Text="{Binding VrrStateText, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0">
+                            <controls:SelectableTextBlock.Style>
+                                <Style TargetType="controls:SelectableTextBlock" BasedOn="{StaticResource {x:Type controls:SelectableTextBlock}}">
+                                    <Setter Property="Foreground" Value="{DynamicResource MutedBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding VrrSupported}" Value="True"><Setter Property="Foreground" Value="{DynamicResource GreenBrush}"/></DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </controls:SelectableTextBlock.Style>
+                        </controls:SelectableTextBlock>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource CardStyle}" Padding="17">
+                    <StackPanel>
+                        <controls:SelectableTextBlock Text="VRR 可变刷新范围" Style="{StaticResource LabelStyle}"/>
+                        <controls:SelectableTextBlock Text="{Binding VrrRangeText, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0" Typography.NumeralAlignment="Tabular"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="4" Style="{StaticResource CardStyle}" Padding="17">
+                    <StackPanel>
+                        <controls:SelectableTextBlock Text="ALLM" Style="{StaticResource LabelStyle}"/>
+                        <controls:SelectableTextBlock Text="{Binding AllmStateText, Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,7,0,0">
+                            <controls:SelectableTextBlock.Style>
+                                <Style TargetType="controls:SelectableTextBlock" BasedOn="{StaticResource {x:Type controls:SelectableTextBlock}}">
+                                    <Setter Property="Foreground" Value="{DynamicResource MutedBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding AllmSupported}" Value="True"><Setter Property="Foreground" Value="{DynamicResource GreenBrush}"/></DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </controls:SelectableTextBlock.Style>
+                        </controls:SelectableTextBlock>
+                    </StackPanel>
+                </Border>
             </Grid>
 
-            <Grid Margin="0,0,0,18"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="18"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <Grid Margin="0,0,0,18">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="18"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
                 <Border Grid.Column="0" Style="{StaticResource CardStyle}">
-                    <StackPanel><controls:SelectableTextBlock Text="可验证的接口信息" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,17"/>
+                    <StackPanel>
+                        <controls:SelectableTextBlock Text="可验证的接口信息" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,17"/>
                         <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="Windows 输出技术" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding Connection, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource ValueStyle}"/></Grid>
                         <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="EDID 输入定义" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding EdidInputDefinition, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource ValueStyle}"/></Grid>
                         <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="EDID 声明位深" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding DeclaredBitDepth, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource ValueStyle}"/></Grid>
@@ -42,14 +255,51 @@
                         <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="YCbCr 4:2:0 位深" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding Ycbcr420BitDepths, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource ValueStyle}"/></Grid>
                         <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="EDID 垂直扫描范围" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding VerticalFrequencyRange, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
                         <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="连接器实例" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding ConnectorInstance, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
-                        <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="当前像素时钟" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding CurrentPixelClock, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
-                        <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="最大 TMDS 字符率" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding MaximumTmdsClock, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
-                        <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="FRL 通道配置" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding FrlLaneConfiguration, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
-                        <Grid><controls:SelectableTextBlock Text="VRR 技术" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding VrrTechnologyText, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource ValueStyle}"/></Grid>
+
+                        <StackPanel Visibility="{Binding IsDisplayPortInterface, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Border Height="1" Background="{DynamicResource LineBrush}" Margin="0,2,0,14"/>
+                            <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="EDID 最大像素时钟" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding MaximumDeclaredPixelClock, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
+                            <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="VRR 技术" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding VrrTechnologyText, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource ValueStyle}"/></Grid>
+                            <StackPanel Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="当前像素时钟" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding CurrentPixelClock, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
+                                <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="当前链路" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding DisplayLink.CurrentLinkText, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
+                                <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="链路等级" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding DisplayLink.CurrentGeneration, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource ValueStyle}"/></Grid>
+                                <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="原始带宽" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding DisplayLink.RawBandwidthText, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
+                                <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="理论有效速率" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding DisplayLink.PayloadBandwidthText, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
+                                <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="最大链路" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding DisplayLink.MaximumLinkText, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
+                                <Grid><controls:SelectableTextBlock Text="总可用通道" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding DisplayLink.LaneCapacityText, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Visibility="{Binding IsHdmiInterface, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Border Height="1" Background="{DynamicResource LineBrush}" Margin="0,2,0,14"/>
+                            <StackPanel Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="当前像素时钟" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding HdmiLink.CurrentPixelClockText, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
+                                <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="估算 TMDS 频率" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding HdmiLink.EstimatedTmdsFrequencyText, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
+                                <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="估算 TMDS 带宽" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding HdmiLink.EstimatedTmdsBandwidthText, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
+                                <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="当前工作模式" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding HdmiLink.CurrentModeText, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource ValueStyle}"/></Grid>
+                            </StackPanel>
+                            <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="最大 TMDS 频率" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding MaximumTmdsClock, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
+                            <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="最大 FRL 带宽" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding MaximumFrlRate, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
+                            <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="FRL 通道配置" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding FrlLaneConfiguration, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource MonoStyle}"/></Grid>
+                            <Grid Margin="0,0,0,12"><controls:SelectableTextBlock Text="ALLM" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding AllmStateText, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource ValueStyle}"/></Grid>
+                            <Grid><controls:SelectableTextBlock Text="VRR 技术" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding VrrTechnologyText, Mode=OneWay}" HorizontalAlignment="Right" Style="{StaticResource ValueStyle}"/></Grid>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
                 <Border Grid.Column="2" Style="{StaticResource CardStyle}">
-                    <StackPanel><controls:SelectableTextBlock Text="EDID 接口数据块" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,16"/><ItemsControl ItemsSource="{Binding InterfaceCapabilities}"><ItemsControl.ItemTemplate><DataTemplate><Border Style="{StaticResource PillStyle}" Margin="0,0,0,8" HorizontalAlignment="Left"><controls:SelectableTextBlock Text="{Binding Mode=OneWay}" FontWeight="Bold" FontSize="11.5"/></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl></StackPanel>
+                    <StackPanel>
+                        <controls:SelectableTextBlock Text="EDID 接口数据块" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,16"/>
+                        <ItemsControl ItemsSource="{Binding InterfaceCapabilities}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource PillStyle}" Margin="0,0,0,8" HorizontalAlignment="Left">
+                                        <controls:SelectableTextBlock Text="{Binding Mode=OneWay}" FontWeight="Bold" FontSize="11.5"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
                 </Border>
             </Grid>
         </StackPanel>

@@ -33,7 +33,7 @@
                 <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                 <Border Grid.Column="0" Style="{StaticResource CardStyle}" Padding="17"><StackPanel><controls:SelectableTextBlock Text="最大声道数" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding AudioChannels, Mode=OneWay}" FontSize="21" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel></Border>
                 <Border Grid.Column="2" Style="{StaticResource CardStyle}" Padding="17"><StackPanel><controls:SelectableTextBlock Text="最高采样率" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding AudioSampleRate, Mode=OneWay}" FontSize="21" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel></Border>
-                <Border Grid.Column="4" Style="{StaticResource CardStyle}" Padding="17"><StackPanel><controls:SelectableTextBlock Text="LPCM 位深" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding AudioBitDepth, Mode=OneWay}" FontSize="21" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel></Border>
+                <Border Grid.Column="4" Style="{StaticResource CardStyle}" Padding="17"><StackPanel><controls:SelectableTextBlock Text="最高 LPCM 位深" Style="{StaticResource LabelStyle}"/><controls:SelectableTextBlock Text="{Binding AudioBitDepth, Mode=OneWay}" FontSize="21" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel></Border>
             </Grid>
 
             <Border Style="{StaticResource CardStyle}" Padding="0" Margin="0,0,0,18" ClipToBounds="True">

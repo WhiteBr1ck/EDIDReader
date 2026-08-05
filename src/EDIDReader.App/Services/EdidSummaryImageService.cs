@@ -114,17 +114,28 @@ public static class EdidSummaryImageService
         DrawSectionTitle(drawing, "HDR", rect);
 
         var hdr = monitor.HdrEotfs.Any(value => value.Contains("PQ", StringComparison.Ordinal) || value.Contains("HLG", StringComparison.Ordinal));
-        DrawText(drawing, hdr ? T("HDR 支持", "HDR CAPABLE") : "SDR", rect.X + 32, rect.Y + 53, 40, hdr ? AccentBrush : InkBrush, BoldTypeface, rect.Width - 64);
+        const double leftColumnWidth = 392;
+        const double rightColumnWidth = 270;
+        var rightColumnX = rect.Right - 32 - rightColumnWidth;
+        DrawText(drawing, hdr ? T("HDR 支持", "HDR CAPABLE") : "SDR", rect.X + 32, rect.Y + 53, 40, hdr ? AccentBrush : InkBrush, BoldTypeface, leftColumnWidth);
+
+        DrawMetric(
+            drawing,
+            T("静态元数据", "Static metadata"),
+            monitor.MetadataType,
+            rightColumnX,
+            rect.Y + 62,
+            rightColumnWidth,
+            InkBrush,
+            18);
 
         DrawText(drawing, "EOTF", rect.X + 32, rect.Y + 111, 15, SubtleBrush, BoldTypeface, rect.Width - 64);
-        DrawWrappedText(drawing, monitor.Eotf, rect.X + 32, rect.Y + 136, 19, InkBrush, SemiBoldTypeface, rect.Width - 64, 2);
+        DrawWrappedText(drawing, monitor.Eotf, rect.X + 32, rect.Y + 136, 19, InkBrush, SemiBoldTypeface, leftColumnWidth, 2);
 
         var metricWidth = (rect.Width - 80) / 3;
-        DrawMetric(drawing, T("峰值亮度", "Peak luminance"), monitor.PeakLuminance, rect.X + 32, rect.Y + 204, metricWidth, InkBrush, 20);
-        DrawMetric(drawing, T("帧平均亮度", "Frame average"), monitor.AverageLuminance, rect.X + 40 + metricWidth, rect.Y + 204, metricWidth, InkBrush, 20);
-        DrawMetric(drawing, T("最小亮度", "Minimum luminance"), monitor.MinimumLuminance, rect.X + 48 + metricWidth * 2, rect.Y + 204, metricWidth, InkBrush, 20);
-
-        DrawMetric(drawing, T("静态元数据", "Static metadata"), monitor.MetadataType, rect.X + 32, rect.Y + 268, rect.Width - 64, InkBrush, 19);
+        DrawMetric(drawing, T("峰值亮度", "Peak luminance"), monitor.PeakLuminance, rect.X + 32, rect.Y + 218, metricWidth, InkBrush, 20);
+        DrawMetric(drawing, T("帧平均亮度", "Frame average"), monitor.AverageLuminance, rect.X + 40 + metricWidth, rect.Y + 218, metricWidth, InkBrush, 20);
+        DrawMetric(drawing, T("最小亮度", "Minimum luminance"), monitor.MinimumLuminance, rect.X + 48 + metricWidth * 2, rect.Y + 218, metricWidth, InkBrush, 20);
     }
 
     private static void DrawColorChartCard(DrawingContext drawing, MonitorProfile monitor, Rect rect)
@@ -171,24 +182,51 @@ public static class EdidSummaryImageService
         var x3 = x2 + columnWidth + innerGap;
         var x4 = x3 + columnWidth + innerGap;
 
+        if (monitor.IsDisplayPortInterface)
+        {
+            DrawText(drawing, monitor.ShowCurrentDisplayPortLink ? monitor.DisplayLink.Source : "EDID", rect.X + 32, rect.Y + 101, 14, SubtleBrush, BoldTypeface, 230);
+            DrawMetric(drawing, T("当前链路", "Current link"), monitor.DisplayLink.CurrentLinkText, x1, rect.Y + 52, columnWidth, InkBrush, 19);
+            DrawMetric(drawing, T("链路等级", "Link rate"), monitor.DisplayLink.CurrentGeneration, x2, rect.Y + 52, columnWidth, AccentBrush, 19);
+            DrawMetric(drawing, T("原始带宽", "Raw bandwidth"), monitor.DisplayLink.RawBandwidthText, x3, rect.Y + 52, columnWidth, InkBrush, 19);
+            DrawMetric(drawing, T("理论有效速率", "Theoretical payload rate"), monitor.DisplayLink.PayloadBandwidthText, x4, rect.Y + 52, columnWidth, InkBrush, 19);
+            DrawMetric(drawing, T("最大链路", "Maximum link"), monitor.DisplayLink.MaximumLinkText, x1, rect.Y + 142, columnWidth, InkBrush, 18);
+            DrawMetric(drawing, T("总可用通道", "Total available lanes"), monitor.DisplayLink.LaneCapacityText, x2, rect.Y + 142, columnWidth, InkBrush, 19);
+            DrawMetric(drawing, T("支持位深", "Supported bit depths"), monitor.SupportedBitDepths, x3, rect.Y + 142, columnWidth, InkBrush, 18);
+            DrawMetric(drawing, T("VRR 可变刷新范围", "VRR variable refresh range"), monitor.VrrRangeText, x4, rect.Y + 142, columnWidth, monitor.VrrSupported ? GreenBrush : InkBrush, 19);
+            return;
+        }
+
+        if (monitor.IsHdmiInterface)
+        {
+            DrawText(drawing, monitor.ShowCurrentHdmiLink ? monitor.HdmiLink.Source : "EDID", rect.X + 32, rect.Y + 101, 14, SubtleBrush, BoldTypeface, 230);
+            DrawMetric(drawing, T("当前像素时钟", "Current pixel clock"), monitor.HdmiLink.CurrentPixelClockText, x1, rect.Y + 52, columnWidth, InkBrush, 19);
+            DrawMetric(drawing, T("估算 TMDS 频率", "Estimated TMDS frequency"), monitor.HdmiLink.EstimatedTmdsFrequencyText, x2, rect.Y + 52, columnWidth, InkBrush, 18);
+            DrawMetric(drawing, T("估算 TMDS 带宽", "Estimated TMDS bandwidth"), monitor.HdmiLink.EstimatedTmdsBandwidthText, x3, rect.Y + 52, columnWidth, InkBrush, 18);
+            DrawMetric(drawing, T("当前工作模式", "Current mode"), monitor.HdmiLink.CurrentModeText, x4, rect.Y + 52, columnWidth, AccentBrush, 18);
+            DrawMetric(drawing, T("最大 TMDS 频率", "Maximum TMDS frequency"), monitor.MaximumTmdsClock, x1, rect.Y + 142, columnWidth, InkBrush, 19);
+            DrawMetric(drawing, T("最大 FRL 带宽", "Maximum FRL bandwidth"), monitor.MaximumFrlRate, x2, rect.Y + 142, columnWidth, InkBrush, 19);
+            DrawMetric(drawing, T("FRL 通道配置", "FRL lane configuration"), monitor.FrlLaneConfiguration, x3, rect.Y + 142, columnWidth, InkBrush, 18);
+            DrawMetric(drawing, "ALLM", monitor.AllmStateText, x4, rect.Y + 142, columnWidth, monitor.AllmSupported ? GreenBrush : InkBrush, 19);
+            return;
+        }
+
+        DrawText(drawing, "EDID", rect.X + 32, rect.Y + 101, 14, SubtleBrush, BoldTypeface, 230);
         DrawMetric(drawing, T("支持位深", "Supported bit depths"), monitor.SupportedBitDepths, x1, rect.Y + 52, columnWidth, InkBrush, 19);
         DrawMetric(drawing, T("YCbCr 4:2:0 位深", "YCbCr 4:2:0 bit depths"), monitor.Ycbcr420BitDepths, x2, rect.Y + 52, columnWidth, InkBrush, 19);
-        DrawMetric(drawing, T("最大 TMDS 字符率", "Maximum TMDS rate"), monitor.MaximumTmdsClock, x3, rect.Y + 52, columnWidth, InkBrush, 19);
-        DrawMetric(drawing, T("最大 FRL 带宽", "Maximum FRL bandwidth"), monitor.MaximumFrlRate, x4, rect.Y + 52, columnWidth, InkBrush, 19);
-        DrawMetric(drawing, T("FRL 通道配置", "FRL lane configuration"), monitor.FrlLaneConfiguration, x1, rect.Y + 142, columnWidth, InkBrush, 18);
-        DrawMetric(drawing, "ALLM", monitor.AllmStateText, x2, rect.Y + 142, columnWidth, monitor.AllmSupported ? GreenBrush : InkBrush, 19);
-        DrawMetric(drawing, "VRR", monitor.VrrTechnologyText, x3, rect.Y + 142, columnWidth, monitor.VrrSupported ? GreenBrush : InkBrush, 18);
-        DrawMetric(drawing, T("VRR 可变刷新范围", "VRR variable refresh range"), monitor.VrrRangeText, x4, rect.Y + 142, columnWidth, monitor.VrrSupported ? GreenBrush : InkBrush, 19);
+        DrawMetric(drawing, T("垂直频率范围", "Vertical frequency range"), monitor.VerticalFrequencyRange, x3, rect.Y + 52, columnWidth, InkBrush, 19);
+        DrawMetric(drawing, T("VRR 可变刷新范围", "VRR variable refresh range"), monitor.VrrRangeText, x4, rect.Y + 52, columnWidth, monitor.VrrSupported ? GreenBrush : InkBrush, 19);
     }
 
     private static void DrawAudioCard(DrawingContext drawing, MonitorProfile monitor, Rect rect)
     {
         DrawCard(drawing, rect, CardBrush);
         DrawSectionTitle(drawing, T("音频能力", "AUDIO CAPABILITIES"), rect);
-        DrawText(drawing, monitor.AudioChannels, rect.X + 32, rect.Y + 59, 35, InkBrush, BoldTypeface, rect.Width - 64);
+        DrawText(drawing, monitor.AudioChannels, rect.X + 32, rect.Y + 59, 35, InkBrush, BoldTypeface, 140);
+        DrawText(drawing, T("支持格式", "Supported formats"), rect.X + 194, rect.Y + 62, 14.5, SubtleBrush, BoldTypeface, rect.Width - 226);
+        DrawWrappedText(drawing, monitor.SupportedAudioFormats, rect.X + 194, rect.Y + 87, 14.5, InkBrush, SemiBoldTypeface, rect.Width - 226, 3);
         var columnWidth = (rect.Width - 82) / 2;
-        DrawMetric(drawing, T("最高采样率", "Maximum sample rate"), monitor.AudioSampleRate, rect.X + 32, rect.Y + 148, columnWidth, InkBrush, 21);
-        DrawMetric(drawing, T("LPCM 位深", "LPCM bit depth"), monitor.AudioBitDepth, rect.X + 50 + columnWidth, rect.Y + 148, columnWidth, InkBrush, 21);
+        DrawMetric(drawing, T("最高采样率", "Maximum sample rate"), monitor.AudioSampleRate, rect.X + 32, rect.Y + 164, columnWidth, InkBrush, 21);
+        DrawMetric(drawing, T("最高 LPCM 位深", "Maximum LPCM bit depth"), monitor.AudioBitDepth, rect.X + 50 + columnWidth, rect.Y + 164, columnWidth, InkBrush, 21);
     }
 
     private static void DrawCieChart(DrawingContext drawing, MonitorProfile monitor, Rect rect)

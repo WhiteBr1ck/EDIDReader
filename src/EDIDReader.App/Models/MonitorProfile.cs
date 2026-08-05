@@ -37,6 +37,12 @@ public sealed record MonitorProfile
     public string MaximumResolution { get; init; } = "未声明";
     public string MaximumRefreshRate { get; init; } = "未声明";
     public string MaximumColorDepth { get; init; } = "未声明";
+    public bool IsDisplayPortInterface { get; init; }
+    public bool IsHdmiInterface { get; init; }
+    public bool ShowCurrentDisplayPortLink { get; init; }
+    public bool ShowCurrentHdmiLink { get; init; }
+    public DisplayLinkInfo DisplayLink { get; init; } = DisplayLinkInfo.Unavailable;
+    public HdmiLinkInfo HdmiLink { get; init; } = HdmiLinkInfo.Unavailable;
 
     public string HdrListText { get; init; } = "SDR";
     public string ColorStateLabel { get; init; } = "Windows 高级颜色";
@@ -119,6 +125,9 @@ public sealed record MonitorProfile
     public string BluePrimary => HasChromaticity ? $"{BlueX:0.0000}   {BlueY:0.0000}" : "未声明";
     public string WhitePoint => HasChromaticity ? $"{WhiteX:0.0000}   {WhiteY:0.0000}" : "未声明";
     public string SupportedColorFormats => ColorFormats.Count > 0 ? string.Join("  ·  ", ColorFormats) : "未声明";
+    public string SupportedAudioFormats => AudioFormats.Count > 0
+        ? string.Join("  ·  ", AudioFormats.Select(format => format.Format).Distinct(StringComparer.OrdinalIgnoreCase))
+        : "未声明";
 
     public override string ToString() => Name;
 }

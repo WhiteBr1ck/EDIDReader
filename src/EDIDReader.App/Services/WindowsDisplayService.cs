@@ -31,6 +31,11 @@ public static partial class WindowsDisplayService
 
         var profiles = new List<MonitorProfile>();
         var seenPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        using var displayLinkService = paths
+            .Take(checked((int)pathCount))
+            .Any(path => path.TargetInfo.TargetAvailable && IsDisplayPortTechnology(path.TargetInfo.OutputTechnology))
+                ? DisplayLinkInfoService.Create()
+                : null;
         for (var index = 0; index < pathCount; index++)
         {
             var path = paths[index];
@@ -52,8 +57,11 @@ public static partial class WindowsDisplayService
             var advancedColor = GetAdvancedColor(path.TargetInfo.AdapterId, path.TargetInfo.Id);
             var sourceMode = GetSourceMode(path.SourceInfo.ModeInfoIndex, modes, modeCount);
             var targetMode = GetTargetMode(path.TargetInfo.ModeInfoIndex, modes, modeCount);
+            var displayLink = IsDisplayPortTechnology(path.TargetInfo.OutputTechnology)
+                ? displayLinkService?.Read(sourceName, targetName.MonitorFriendlyDeviceName) ?? DisplayLinkInfo.Unavailable
+                : DisplayLinkInfo.Unavailable;
 
-            profiles.Add(BuildProfile(index, path, targetName, sourceName, sourceMode, targetMode, advancedColor, parsed, rawEdid));
+            profiles.Add(BuildProfile(index, path, targetName, sourceName, sourceMode, targetMode, advancedColor, displayLink, parsed, rawEdid));
         }
 
         return profiles;
@@ -75,6 +83,8 @@ public static partial class WindowsDisplayService
         var eotfs = parsed.HdrEotfs.ToArray();
         var hdrSupported = eotfs.Any(value => value.Contains("PQ", StringComparison.Ordinal) || value.Contains("HLG", StringComparison.Ordinal));
         var connection = OfflineConnectionName(parsed);
+        var isDisplayPort = connection.Contains("DisplayPort", StringComparison.OrdinalIgnoreCase);
+        var isHdmi = connection.Contains("HDMI", StringComparison.OrdinalIgnoreCase);
         var interfaceCapabilities = new List<string> { $"EDID 输入定义：{parsed.InputDefinition}" };
         interfaceCapabilities.AddRange(parsed.InterfaceCapabilities);
         var colors = (colorIndex % 4) switch
@@ -126,6 +136,8 @@ public static partial class WindowsDisplayService
             MaximumResolution = FormatMaximumResolution(parsed.VideoModes),
             MaximumRefreshRate = FormatMaximumRefreshRate(parsed.VideoModes),
             MaximumColorDepth = FormatMaximumBitDepth(parsed.SupportedBitDepths),
+            IsDisplayPortInterface = isDisplayPort,
+            IsHdmiInterface = isHdmi,
             HdrListText = hdrSupported ? "HDR 支持" : "SDR",
             ColorStateLabel = "EDID HDR 能力",
             HdrStateText = hdrSupported ? "HDR 支持" : "SDR",
@@ -154,7 +166,7 @@ public static partial class WindowsDisplayService
             HasChromaticity = parsed.HasChromaticity,
             AudioChannels = parsed.MaximumAudioChannels > 0 ? $"{parsed.MaximumAudioChannels} 声道" : "未声明",
             AudioSampleRate = parsed.MaximumAudioSampleRateKHz > 0 ? $"{parsed.MaximumAudioSampleRateKHz:g} kHz" : "未声明",
-            AudioBitDepth = parsed.LpcmBitDepths.Count > 0 ? string.Join(" · ", parsed.LpcmBitDepths.Order()) + " bit" : "未声明",
+            AudioBitDepth = FormatMaximumLpcmBitDepth(parsed.LpcmBitDepths),
             VideoModeCount = parsed.VideoModes.Count.ToString(),
             MaximumDeclaredPixelClock = parsed.MaximumDeclaredPixelClockMHz > 0 ? $"{parsed.MaximumDeclaredPixelClockMHz:0.###} MHz" : "未声明",
             PreferredHorizontalActive = preferred is not null ? preferred.HorizontalActive.ToString() : "未声明",
@@ -202,6 +214,7 @@ public static partial class WindowsDisplayService
         DisplayConfigSourceMode? sourceMode,
         DisplayConfigTargetMode? targetMode,
         AdvancedColorSnapshot advancedColor,
+        DisplayLinkInfo displayLink,
         ParsedEdid? parsed,
         byte[] rawEdid)
     {
@@ -272,6 +285,14 @@ public static partial class WindowsDisplayService
         var currentPixelClock = targetMode?.TargetVideoSignalInfo.PixelRate > 0
             ? $"{targetMode.Value.TargetVideoSignalInfo.PixelRate / 1_000_000d:0.###} MHz"
             : "Windows 未提供";
+        var currentPixelClockMHz = targetMode?.TargetVideoSignalInfo.PixelRate > 0
+            ? targetMode.Value.TargetVideoSignalInfo.PixelRate / 1_000_000d
+            : 0;
+        var isDisplayPort = IsDisplayPortTechnology(path.TargetInfo.OutputTechnology);
+        var isHdmi = path.TargetInfo.OutputTechnology == DisplayConfigVideoOutputTechnology.Hdmi;
+        var hdmiLink = isHdmi
+            ? BuildHdmiLinkInfo(currentPixelClockMHz, advancedColor, parsed)
+            : HdmiLinkInfo.Unavailable;
         var rawDump = FormatHex(rawEdid);
 
         return new MonitorProfile
@@ -303,8 +324,14 @@ public static partial class WindowsDisplayService
             ColorDepth = colorDepth,
             ColorSpace = colorSpace,
             MaximumResolution = parsed is not null ? FormatMaximumResolution(parsed.VideoModes) : width > 0 && height > 0 ? $"{width} × {height}" : "未声明",
-            MaximumRefreshRate = parsed is not null ? FormatMaximumRefreshRate(parsed.VideoModes) : refresh > 0 ? $"{refresh:0.##} Hz" : "未声明",
+            MaximumRefreshRate = FormatMaximumRefreshRate(parsed?.VideoModes ?? [], refresh),
             MaximumColorDepth = parsed is not null ? FormatMaximumBitDepth(parsed.SupportedBitDepths) : colorDepth,
+            IsDisplayPortInterface = isDisplayPort,
+            IsHdmiInterface = isHdmi,
+            ShowCurrentDisplayPortLink = isDisplayPort,
+            ShowCurrentHdmiLink = isHdmi,
+            DisplayLink = displayLink,
+            HdmiLink = hdmiLink,
             HdrListText = hdrActive ? "HDR 输出" : acmActive ? "SDR + ACM" : hdrSupported ? "HDR 支持" : "SDR",
             HdrStateText = advancedColor.HasModeInfo ? (hdrActive ? "HDR" : acmActive ? "SDR + ACM" : "SDR") : advancedColor.Enabled ? "高级颜色" : "SDR",
             HdrOutputTitle = currentColorMode,
@@ -332,7 +359,7 @@ public static partial class WindowsDisplayService
             HasChromaticity = parsed?.HasChromaticity == true,
             AudioChannels = parsed?.MaximumAudioChannels > 0 ? $"{parsed.MaximumAudioChannels} 声道" : "未声明",
             AudioSampleRate = parsed?.MaximumAudioSampleRateKHz > 0 ? $"{parsed.MaximumAudioSampleRateKHz:g} kHz" : "未声明",
-            AudioBitDepth = parsed?.LpcmBitDepths.Count > 0 ? string.Join(" · ", parsed.LpcmBitDepths.Order()) + " bit" : "未声明",
+            AudioBitDepth = FormatMaximumLpcmBitDepth(parsed?.LpcmBitDepths ?? []),
             VideoModeCount = parsed?.VideoModes.Count.ToString() ?? "0",
             MaximumDeclaredPixelClock = parsed?.MaximumDeclaredPixelClockMHz > 0 ? $"{parsed.MaximumDeclaredPixelClockMHz:0.###} MHz" : "未声明",
             PreferredHorizontalActive = preferred is not null ? preferred.HorizontalActive.ToString() : "未声明",
@@ -382,6 +409,49 @@ public static partial class WindowsDisplayService
         return values.Length > 0 ? $"{string.Join(" / ", values)} bpc" : "未声明";
     }
 
+    private static HdmiLinkInfo BuildHdmiLinkInfo(double pixelClockMHz, AdvancedColorSnapshot advancedColor, ParsedEdid? parsed)
+    {
+        var frequencyMHz = EstimateTmdsFrequency(
+            pixelClockMHz,
+            advancedColor.Available ? advancedColor.ColorEncoding : uint.MaxValue,
+            advancedColor.Available ? advancedColor.BitsPerColorChannel : 0);
+        var bandwidthGbps = frequencyMHz > 0 ? frequencyMHz * 30d / 1000d : 0;
+        var maximumTmdsMHz = parsed?.MaximumTmdsClockMHz ?? 0;
+        var currentMode = frequencyMHz <= 0 || maximumTmdsMHz <= 0
+            ? "无法判断"
+            : frequencyMHz <= maximumTmdsMHz + 0.5
+                ? "TMDS"
+                : parsed?.MaximumFrlGbps > 0
+                    ? "FRL 或 DSC"
+                    : "无法判断";
+
+        return new HdmiLinkInfo
+        {
+            Available = pixelClockMHz > 0,
+            Source = parsed is null ? "DisplayConfig" : "DisplayConfig + EDID",
+            CurrentPixelClockMHz = pixelClockMHz > 0 ? pixelClockMHz : null,
+            EstimatedTmdsFrequencyMHz = frequencyMHz > 0 ? frequencyMHz : null,
+            EstimatedTmdsBandwidthGbps = bandwidthGbps > 0 ? bandwidthGbps : null,
+            CurrentModeText = currentMode
+        };
+    }
+
+    private static double EstimateTmdsFrequency(double pixelClockMHz, uint colorEncoding, uint bitsPerColorChannel)
+    {
+        if (pixelClockMHz <= 0 || bitsPerColorChannel <= 0)
+        {
+            return 0;
+        }
+
+        return colorEncoding switch
+        {
+            0 or 1 => pixelClockMHz * bitsPerColorChannel / 8d,
+            2 => pixelClockMHz,
+            3 => pixelClockMHz * 0.5d * bitsPerColorChannel / 8d,
+            _ => 0
+        };
+    }
+
     private static string FormatMaximumResolution(IEnumerable<VideoModeInfo> modes)
     {
         var maximum = modes
@@ -393,10 +463,17 @@ public static partial class WindowsDisplayService
         return maximum is null ? "未声明" : maximum.Resolution;
     }
 
-    private static string FormatMaximumRefreshRate(IEnumerable<VideoModeInfo> modes)
+    private static string FormatMaximumRefreshRate(IEnumerable<VideoModeInfo> modes, double currentRefreshHz = 0)
     {
-        var maximum = modes.Select(mode => mode.RefreshHz).Where(value => value > 0).DefaultIfEmpty(0).Max();
+        var edidMaximum = modes.Select(mode => mode.RefreshHz).Where(value => value > 0).DefaultIfEmpty(0).Max();
+        var maximum = Math.Max(edidMaximum, currentRefreshHz);
         return maximum > 0 ? $"{maximum:0.##} Hz" : "未声明";
+    }
+
+    private static string FormatMaximumLpcmBitDepth(IEnumerable<int> bitDepths)
+    {
+        var maximum = bitDepths.DefaultIfEmpty(0).Max();
+        return maximum > 0 ? $"{maximum} bit" : "未声明";
     }
 
     private static string FormatMaximumBitDepth(IEnumerable<int> bitDepths)
@@ -634,6 +711,11 @@ public static partial class WindowsDisplayService
         DisplayConfigVideoOutputTechnology.Hd15 => "VGA",
         _ => "显示"
     };
+
+    private static bool IsDisplayPortTechnology(DisplayConfigVideoOutputTechnology technology)
+        => technology is DisplayConfigVideoOutputTechnology.DisplayPortExternal
+            or DisplayConfigVideoOutputTechnology.DisplayPortEmbedded
+            or DisplayConfigVideoOutputTechnology.DisplayPortUsbTunnel;
 
     private static string ColorEncodingName(uint value) => value switch
     {

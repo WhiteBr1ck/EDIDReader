@@ -32,7 +32,7 @@
                 <StackPanel>
                     <controls:SelectableTextBlock Text="关于" Style="{StaticResource SectionTitleStyle}"/>
                     <controls:SelectableTextBlock Text="EDID Reader" FontWeight="Bold" Margin="0,17,0,0"/>
-                    <controls:SelectableTextBlock Text="版本 0.4.0" Style="{StaticResource CaptionStyle}" Margin="0,4,0,0"/>
+                    <controls:SelectableTextBlock Text="版本 0.5.0" Style="{StaticResource CaptionStyle}" Margin="0,4,0,0"/>
                 </StackPanel>
             </Border>
         </StackPanel>
