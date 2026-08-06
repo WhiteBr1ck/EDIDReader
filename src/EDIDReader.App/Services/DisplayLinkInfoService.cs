@@ -32,6 +32,7 @@ internal sealed class DisplayLinkInfoService : IDisposable
             return DisplayLinkInfo.Unavailable;
         }
 
+        var fallback = DisplayLinkInfo.Unavailable;
         foreach (var provider in _providers)
         {
             try
@@ -41,13 +42,17 @@ internal sealed class DisplayLinkInfoService : IDisposable
                 {
                     return info;
                 }
+                if (!string.IsNullOrWhiteSpace(info.FailureReason))
+                {
+                    fallback = info;
+                }
             }
             catch
             {
                 // A vendor API failure must not prevent EDID and DisplayConfig data from loading.
             }
         }
-        return DisplayLinkInfo.Unavailable;
+        return fallback;
     }
 
     public void Dispose()

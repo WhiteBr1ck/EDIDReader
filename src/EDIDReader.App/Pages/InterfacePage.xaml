@@ -61,7 +61,7 @@
                 <StackPanel>
                     <Grid Margin="0,0,0,13">
                         <controls:SelectableTextBlock Text="当前 DP 链路" Style="{StaticResource SectionTitleStyle}"/>
-                        <controls:SelectableTextBlock Text="{Binding DisplayLink.Source, Mode=OneWay}"
+                        <controls:SelectableTextBlock Text="{Binding DisplayLink.SourceText, Mode=OneWay}"
                                                       HorizontalAlignment="Right"
                                                       Style="{StaticResource CaptionStyle}"/>
                     </Grid>

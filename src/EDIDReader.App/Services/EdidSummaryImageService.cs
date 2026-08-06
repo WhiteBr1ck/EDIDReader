@@ -184,7 +184,7 @@ public static class EdidSummaryImageService
 
         if (monitor.IsDisplayPortInterface)
         {
-            DrawText(drawing, monitor.ShowCurrentDisplayPortLink ? monitor.DisplayLink.Source : "EDID", rect.X + 32, rect.Y + 101, 14, SubtleBrush, BoldTypeface, 230);
+            DrawText(drawing, monitor.ShowCurrentDisplayPortLink ? LocalizationService.Translate(monitor.DisplayLink.SourceText) : "EDID", rect.X + 32, rect.Y + 101, 14, SubtleBrush, BoldTypeface, 230);
             DrawMetric(drawing, T("当前链路", "Current link"), monitor.DisplayLink.CurrentLinkText, x1, rect.Y + 52, columnWidth, InkBrush, 19);
             DrawMetric(drawing, T("链路等级", "Link rate"), monitor.DisplayLink.CurrentGeneration, x2, rect.Y + 52, columnWidth, AccentBrush, 19);
             DrawMetric(drawing, T("原始带宽", "Raw bandwidth"), monitor.DisplayLink.RawBandwidthText, x3, rect.Y + 52, columnWidth, InkBrush, 19);

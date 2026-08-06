@@ -6,9 +6,17 @@ public sealed record DisplayLinkInfo
 {
     public static DisplayLinkInfo Unavailable { get; } = new();
 
+    public static DisplayLinkInfo UnavailableFrom(string source, string failureReason)
+        => new()
+        {
+            Source = source,
+            FailureReason = failureReason
+        };
+
     public bool Available { get; init; }
     public string Vendor { get; init; } = string.Empty;
     public string Source { get; init; } = "驱动未提供";
+    public string FailureReason { get; init; } = string.Empty;
     public double? CurrentLinkRateGbps { get; init; }
     public int? CurrentLaneCount { get; init; }
     public double? MaximumLinkRateGbps { get; init; }
@@ -18,6 +26,7 @@ public sealed record DisplayLinkInfo
     public string MaximumGeneration { get; init; } = "驱动未提供";
 
     public string CurrentLinkText => FormatLink(CurrentLinkRateGbps, CurrentLaneCount);
+    public string SourceText => Available || string.IsNullOrWhiteSpace(FailureReason) ? Source : FailureReason;
     public string MaximumLinkText => FormatLink(MaximumLinkRateGbps, MaximumLaneCount);
     public string RawBandwidthText => FormatBandwidth(CurrentLinkRateGbps, CurrentLaneCount, false);
     public string PayloadBandwidthText => FormatBandwidth(CurrentLinkRateGbps, CurrentLaneCount, true);
